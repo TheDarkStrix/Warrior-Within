@@ -1,3 +1,4 @@
+import "../css/style.css";
 const canvas = document.querySelector("canvas");
 const canvasContext = canvas.getContext("2d");
 
@@ -26,6 +27,7 @@ class Sprite {
     };
     this.color = color;
     this.isAttacking;
+    this.health = 100;
   }
 
   draw() {
@@ -162,10 +164,14 @@ function animate() {
 
   if (detectCollisions({ player, enemy }) && player.isAttacking) {
     player.isAttacking = false;
+    enemy.health -= 20;
+    document.getElementById("enemyHealth").style.width = enemy.health + "%";
   }
 
   if (detectCollisions({ enemy, player }) && enemy.isAttacking) {
     enemy.isAttacking = false;
+    player.health -= 20;
+    document.getElementById("playerHealth").style.width = player.health + "%";
   }
 }
 

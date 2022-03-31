@@ -1,0 +1,53 @@
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  position: relative;
+  display: inline-block;
+}
+
+.healthBarContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  padding: 20px;
+}
+
+.healthPositionWrapper {
+  position: relative;
+  height: 30px;
+  width: 100%;
+}
+
+.playerHealthBar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.healthBar {
+  background-color: yellow;
+  width: 100%;
+  z-index: 12;
+  height: 100%;
+  top: 0;
+  position: absolute;
+}
+
+.healthBarBg {
+  background-color: blue;
+  width: 100%;
+  position: absolute;
+  height: 100%;
+  z-index: 1;
+}
+
+.timer {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  flex-shrink: 0;
+}
