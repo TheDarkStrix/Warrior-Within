@@ -36,15 +36,15 @@ class Sprite {
       this.width,
       this.height
     );
-    // if (this.isAttacking) {
-    canvasContext.fillStyle = "green";
-    canvasContext.fillRect(
-      this.attackBox.position.x,
-      this.attackBox.position.y,
-      this.attackBox.width,
-      this.attackBox.height
-    );
-    // }
+    if (this.isAttacking) {
+      canvasContext.fillStyle = "green";
+      canvasContext.fillRect(
+        this.attackBox.position.x,
+        this.attackBox.position.y,
+        this.attackBox.width,
+        this.attackBox.height
+      );
+    }
   }
 
   update() {
@@ -123,6 +123,15 @@ const keys = {
   },
 };
 
+function detectCollisions({ player, enemy }) {
+  return (
+    player.attackBox.position.x + player.attackBox.width >= enemy.position.x &&
+    player.attackBox.position.x <= enemy.position.x + enemy.width &&
+    player.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
+    player.attackBox.position.y <= enemy.position.y + enemy.height
+  );
+}
+
 function animate() {
   window.requestAnimationFrame(animate);
   /** Reset the canvas on every frame */
@@ -151,14 +160,12 @@ function animate() {
 
   /** Detect Collision */
 
-  if (
-    player.attackBox.position.x + player.attackBox.width >= enemy.position.x &&
-    player.attackBox.position.x <= enemy.position.x + enemy.width &&
-    player.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
-    player.attackBox.position.y <= enemy.position.y + enemy.height &&
-    player.isAttacking
-  ) {
+  if (detectCollisions({ player, enemy }) && player.isAttacking) {
     player.isAttacking = false;
+  }
+
+  if (detectCollisions({ enemy, player }) && enemy.isAttacking) {
+    enemy.isAttacking = false;
   }
 }
 
@@ -192,6 +199,9 @@ window.addEventListener("keydown", (e) => {
     case " ":
       player.isAttacking = true;
       break;
+    case "ArrowDown":
+      enemy.isAttacking = true;
+      break;
   }
 });
 
@@ -212,6 +222,9 @@ window.addEventListener("keyup", (e) => {
       break;
     case " ":
       player.isAttacking = false;
+      break;
+    case "ArrowDown":
+      enemy.isAttacking = false;
       break;
   }
 });
