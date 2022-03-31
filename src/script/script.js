@@ -9,23 +9,34 @@ const gravity = 0.7;
 const movementVelocity = 5;
 const movementJump = -20;
 class Sprite {
-  constructor({ position, velocity, color }) {
+  constructor({ position, velocity, color, offset }) {
     this.position = position;
     this.velocity = velocity;
     this.height = 150;
+    this.width = 50;
     this.lastKey;
     this.attackBox = {
-      position: this.position,
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+      },
+      offset,
       width: 100,
       height: 50,
     };
     this.color = color;
+    this.isAttacking;
   }
 
   draw() {
     canvasContext.fillStyle = this.color;
-    canvasContext.fillRect(this.position.x, this.position.y, 50, this.height);
-
+    canvasContext.fillRect(
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
+    );
+    // if (this.isAttacking) {
     canvasContext.fillStyle = "green";
     canvasContext.fillRect(
       this.attackBox.position.x,
@@ -33,10 +44,14 @@ class Sprite {
       this.attackBox.width,
       this.attackBox.height
     );
+    // }
   }
 
   update() {
     this.draw();
+    this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
+    this.attackBox.position.y = this.position.y;
+
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
     /** this.position.y + this.height + this.velocity.y is bottom end of the player
@@ -48,6 +63,13 @@ class Sprite {
       /** Update the gravity if the player has not yet reached the bottom of the canvas */
       this.velocity.y += gravity;
     }
+  }
+
+  attack() {
+    this.isAttacking = true;
+    setTimeout(() => {
+      this.isAttacking = false;
+    }, 100);
   }
 }
 
@@ -61,6 +83,10 @@ const player = new Sprite({
     y: 10,
   },
   color: "red",
+  offset: {
+    x: 0,
+    y: 0,
+  },
 });
 
 const enemy = new Sprite({
@@ -73,6 +99,10 @@ const enemy = new Sprite({
     y: 0,
   },
   color: "blue",
+  offset: {
+    x: -50,
+    y: 0,
+  },
 });
 
 player.update();
@@ -118,6 +148,18 @@ function animate() {
   } else if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
     enemy.velocity.x = movementVelocity;
   }
+
+  /** Detect Collision */
+
+  if (
+    player.attackBox.position.x + player.attackBox.width >= enemy.position.x &&
+    player.attackBox.position.x <= enemy.position.x + enemy.width &&
+    player.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
+    player.attackBox.position.y <= enemy.position.y + enemy.height &&
+    player.isAttacking
+  ) {
+    player.isAttacking = false;
+  }
 }
 
 animate();
@@ -147,6 +189,9 @@ window.addEventListener("keydown", (e) => {
     case "ArrowUp":
       enemy.velocity.y = movementJump;
       break;
+    case " ":
+      player.isAttacking = true;
+      break;
   }
 });
 
@@ -164,6 +209,9 @@ window.addEventListener("keyup", (e) => {
       break;
     case "ArrowLeft":
       keys[e.key].pressed = false;
+      break;
+    case " ":
+      player.isAttacking = false;
       break;
   }
 });
