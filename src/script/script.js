@@ -11,20 +11,43 @@ const movementVelocity = 5;
 const movementJump = -20;
 
 class Sprite {
-  constructor({ position, imageSrc }) {
+  constructor({ position, imageSrc, scale = 1, framesMax = 1 }) {
     this.position = position;
     this.height = 150;
     this.width = 50;
     this.image = new Image();
     this.image.src = imageSrc;
+    this.scale = scale;
+    this.framesMax = framesMax;
+    this.framesCurrent = 0;
+    this.framesElapsed = 0;
+    this.framesHold = 10;
   }
 
   draw() {
-    canvasContext.drawImage(this.image, this.position.x, this.position.y);
+    canvasContext.drawImage(
+      this.image,
+      this.framesCurrent * (this.image.width / this.framesMax),
+      0,
+      this.image.width / this.framesMax,
+      this.image.height,
+      this.position.x,
+      this.position.y,
+      (this.image.width / this.framesMax) * this.scale,
+      this.image.height * this.scale
+    );
   }
 
   update() {
     this.draw();
+    this.framesElapsed++;
+    if (this.framesElapsed % this.framesHold === 0) {
+      if (this.framesCurrent < this.framesMax - 1) {
+        this.framesCurrent++;
+      } else {
+        this.framesCurrent = 0;
+      }
+    }
   }
 }
 
@@ -34,6 +57,16 @@ const background = new Sprite({
     y: 0,
   },
   imageSrc: "/textures/background.png",
+});
+
+const shop = new Sprite({
+  position: {
+    x: 600,
+    y: 128,
+  },
+  scale: 2.75,
+  imageSrc: "/textures/shop.png",
+  framesMax: 6,
 });
 
 class Fighter {
@@ -193,6 +226,8 @@ function animate() {
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
   background.update();
+  shop.update();
+
   player.update();
   enemy.update();
 
