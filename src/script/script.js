@@ -134,6 +134,31 @@ function detectCollisions({ player, enemy }) {
   );
 }
 
+function checkGameState({ player, enemy }) {
+  if (player.health === enemy.health) {
+    gameEnd.innerHTML = "Tie";
+  } else if (player.health > enemy.health) {
+    gameEnd.innerHTML = "Player Won";
+  } else {
+    gameEnd.innerHTML = "Enemy Won";
+  }
+}
+let timer = 5;
+let timerCountDown;
+function decreaseTimer() {
+  let timerHTMLContent = document.getElementById("gameTimer");
+  let gameEnd = document.getElementById("gameEnd");
+  timerCountDown = setInterval(() => {
+    if (timer > 0) {
+      timer--;
+      timerHTMLContent.innerHTML = timer;
+    } else {
+      clearInterval(timerCountDown);
+      checkGameState({ player, enemy });
+    }
+  }, 1000);
+}
+
 function animate() {
   window.requestAnimationFrame(animate);
   /** Reset the canvas on every frame */
@@ -173,9 +198,15 @@ function animate() {
     player.health -= 20;
     document.getElementById("playerHealth").style.width = player.health + "%";
   }
+
+  if (player.health <= 0 || enemy.health <= 0) {
+    checkGameState({ player, enemy });
+    clearInterval(timerCountDown);
+  }
 }
 
 animate();
+decreaseTimer();
 
 window.addEventListener("keydown", (e) => {
   console.log(e.key);
