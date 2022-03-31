@@ -11,7 +11,13 @@ const movementVelocity = 5;
 const movementJump = -20;
 
 class Sprite {
-  constructor({ position, imageSrc, scale = 1, framesMax = 1 }) {
+  constructor({
+    position,
+    imageSrc,
+    scale = 1,
+    framesMax = 1,
+    offset = { x: 0, y: 0 },
+  }) {
     this.position = position;
     this.height = 150;
     this.width = 50;
@@ -22,6 +28,18 @@ class Sprite {
     this.framesCurrent = 0;
     this.framesElapsed = 0;
     this.framesHold = 10;
+    this.offset = offset;
+  }
+
+  animateFrames() {
+    this.framesElapsed++;
+    if (this.framesElapsed % this.framesHold === 0) {
+      if (this.framesCurrent < this.framesMax - 1) {
+        this.framesCurrent++;
+      } else {
+        this.framesCurrent = 0;
+      }
+    }
   }
 
   draw() {
@@ -31,8 +49,8 @@ class Sprite {
       0,
       this.image.width / this.framesMax,
       this.image.height,
-      this.position.x,
-      this.position.y,
+      this.position.x - this.offset.x,
+      this.position.y - this.offset.y,
       (this.image.width / this.framesMax) * this.scale,
       this.image.height * this.scale
     );
@@ -40,14 +58,7 @@ class Sprite {
 
   update() {
     this.draw();
-    this.framesElapsed++;
-    if (this.framesElapsed % this.framesHold === 0) {
-      if (this.framesCurrent < this.framesMax - 1) {
-        this.framesCurrent++;
-      } else {
-        this.framesCurrent = 0;
-      }
-    }
+    this.animateFrames();
   }
 }
 
@@ -69,9 +80,23 @@ const shop = new Sprite({
   framesMax: 6,
 });
 
-class Fighter {
-  constructor({ position, velocity, color, offset }) {
-    this.position = position;
+class Fighter extends Sprite {
+  constructor({
+    position,
+    velocity,
+    color,
+    imageSrc,
+    scale = 1,
+    framesMax = 1,
+    offset = { x: 0, y: 0 },
+  }) {
+    super({
+      imageSrc,
+      scale,
+      framesMax,
+      position,
+      offset,
+    });
     this.velocity = velocity;
     this.height = 150;
     this.width = 50;
@@ -88,29 +113,14 @@ class Fighter {
     this.color = color;
     this.isAttacking;
     this.health = 100;
-  }
-
-  draw() {
-    canvasContext.fillStyle = this.color;
-    canvasContext.fillRect(
-      this.position.x,
-      this.position.y,
-      this.width,
-      this.height
-    );
-    if (this.isAttacking) {
-      canvasContext.fillStyle = "green";
-      canvasContext.fillRect(
-        this.attackBox.position.x,
-        this.attackBox.position.y,
-        this.attackBox.width,
-        this.attackBox.height
-      );
-    }
+    this.framesCurrent = 0;
+    this.framesElapsed = 0;
+    this.framesHold = 5;
   }
 
   update() {
     this.draw();
+    this.animateFrames();
     this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
     this.attackBox.position.y = this.position.y;
 
@@ -148,6 +158,13 @@ const player = new Fighter({
   offset: {
     x: 0,
     y: 0,
+  },
+  imageSrc: "/textures/Player/Idle.png",
+  framesMax: 11,
+  scale: 2.5,
+  offset: {
+    x: 150,
+    y: 138,
   },
 });
 
