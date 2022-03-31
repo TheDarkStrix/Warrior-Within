@@ -9,16 +9,30 @@ const gravity = 0.7;
 const movementVelocity = 5;
 const movementJump = -20;
 class Sprite {
-  constructor({ position, velocity }) {
+  constructor({ position, velocity, color }) {
     this.position = position;
     this.velocity = velocity;
     this.height = 150;
     this.lastKey;
+    this.attackBox = {
+      position: this.position,
+      width: 100,
+      height: 50,
+    };
+    this.color = color;
   }
 
   draw() {
-    canvasContext.fillStyle = "red";
+    canvasContext.fillStyle = this.color;
     canvasContext.fillRect(this.position.x, this.position.y, 50, this.height);
+
+    canvasContext.fillStyle = "green";
+    canvasContext.fillRect(
+      this.attackBox.position.x,
+      this.attackBox.position.y,
+      this.attackBox.width,
+      this.attackBox.height
+    );
   }
 
   update() {
@@ -46,6 +60,7 @@ const player = new Sprite({
     x: 0,
     y: 10,
   },
+  color: "red",
 });
 
 const enemy = new Sprite({
@@ -57,6 +72,7 @@ const enemy = new Sprite({
     x: 0,
     y: 0,
   },
+  color: "blue",
 });
 
 player.update();
