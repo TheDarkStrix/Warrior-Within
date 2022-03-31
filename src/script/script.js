@@ -209,7 +209,6 @@ animate();
 decreaseTimer();
 
 window.addEventListener("keydown", (e) => {
-  console.log(e.key);
   switch (e.key) {
     case "d":
       keys.d.pressed = true;
@@ -243,7 +242,6 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("keyup", (e) => {
-  console.log(e.key);
   switch (e.key) {
     case "d":
       keys[e.key].pressed = false;
