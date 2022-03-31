@@ -9,7 +9,34 @@ canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 const gravity = 0.7;
 const movementVelocity = 5;
 const movementJump = -20;
+
 class Sprite {
+  constructor({ position, imageSrc }) {
+    this.position = position;
+    this.height = 150;
+    this.width = 50;
+    this.image = new Image();
+    this.image.src = imageSrc;
+  }
+
+  draw() {
+    canvasContext.drawImage(this.image, this.position.x, this.position.y);
+  }
+
+  update() {
+    this.draw();
+  }
+}
+
+const background = new Sprite({
+  position: {
+    x: 0,
+    y: 0,
+  },
+  imageSrc: "/textures/background.png",
+});
+
+class Fighter {
   constructor({ position, velocity, color, offset }) {
     this.position = position;
     this.velocity = velocity;
@@ -58,7 +85,7 @@ class Sprite {
     this.position.y += this.velocity.y;
     /** this.position.y + this.height + this.velocity.y is bottom end of the player
      */
-    if (this.position.y + this.height + this.velocity.y >= canvas.height) {
+    if (this.position.y + this.height + this.velocity.y >= canvas.height - 96) {
       /** set the velocity to 0 when player/ememy reacher the bottom of the canvas */
       this.velocity.y = 0;
     } else {
@@ -75,7 +102,7 @@ class Sprite {
   }
 }
 
-const player = new Sprite({
+const player = new Fighter({
   position: {
     x: 0,
     y: 0,
@@ -91,7 +118,7 @@ const player = new Sprite({
   },
 });
 
-const enemy = new Sprite({
+const enemy = new Fighter({
   position: {
     x: 400,
     y: 50,
@@ -164,6 +191,8 @@ function animate() {
   /** Reset the canvas on every frame */
   canvasContext.fillStyle = "black";
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+
+  background.update();
   player.update();
   enemy.update();
 
