@@ -89,13 +89,14 @@ class Fighter extends Sprite {
     scale = 1,
     framesMax = 1,
     offset = { x: 0, y: 0 },
+    sprites,
   }) {
     super({
       imageSrc,
       scale,
-      framesMax,
       position,
       offset,
+      framesMax,
     });
     this.velocity = velocity;
     this.height = 150;
@@ -116,6 +117,12 @@ class Fighter extends Sprite {
     this.framesCurrent = 0;
     this.framesElapsed = 0;
     this.framesHold = 5;
+    this.sprites = sprites;
+
+    for (const sprite in this.sprites) {
+      sprites[sprite].image = new Image();
+      sprites[sprite].image.src = sprites[sprite].imageSrc;
+    }
   }
 
   update() {
@@ -131,6 +138,7 @@ class Fighter extends Sprite {
     if (this.position.y + this.height + this.velocity.y >= canvas.height - 96) {
       /** set the velocity to 0 when player/ememy reacher the bottom of the canvas */
       this.velocity.y = 0;
+      this.position.y = 330;
     } else {
       /** Update the gravity if the player has not yet reached the bottom of the canvas */
       this.velocity.y += gravity;
@@ -142,6 +150,65 @@ class Fighter extends Sprite {
     setTimeout(() => {
       this.isAttacking = false;
     }, 100);
+  }
+
+  switchSprite(sprite) {
+    if (
+      this.image === this.sprites.attack.image &&
+      this.framesCurrent < this.sprites.attack.framesMax - 1
+    )
+      return;
+
+    switch (sprite) {
+      case "idle":
+        if (this.image !== this.sprites.idle.image) {
+          this.image = this.sprites.idle.image;
+          this.framesMax = this.sprites.idle.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+      case "run":
+        if (this.image !== this.sprites.run.image) {
+          this.image = this.sprites.run.image;
+          this.framesMax = this.sprites.run.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+      case "jump":
+        {
+          if (this.image !== this.sprites.jump.image) {
+            this.image = this.sprites.jump.image;
+            this.framesMax = this.sprites.jump.framesMax;
+            this.framesCurrent = 0;
+          }
+        }
+        break;
+      case "fall":
+        {
+          if (this.image !== this.sprites.fall.image) {
+            this.image = this.sprites.fall.image;
+            this.framesMax = this.sprites.fall.framesMax;
+            this.framesCurrent = 0;
+          }
+        }
+        break;
+      case "attack":
+        {
+          if (this.image !== this.sprites.attack.image) {
+            this.image = this.sprites.attack.image;
+            this.framesMax = this.sprites.attack.framesMax;
+            this.framesCurrent = 0;
+          }
+        }
+        break;
+      case "death":
+        if (this.image !== this.sprites.death.image) {
+          this.image = this.sprites.death.image;
+          this.framesMax = this.sprites.death.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+    }
   }
 }
 
@@ -163,8 +230,38 @@ const player = new Fighter({
   framesMax: 11,
   scale: 2.5,
   offset: {
-    x: 150,
+    x: 215,
     y: 138,
+  },
+  sprites: {
+    idle: {
+      imageSrc: "/textures/Player/Idle.png",
+      framesMax: 11,
+    },
+    run: {
+      imageSrc: "/textures/Player/Run.png",
+      framesMax: 8,
+    },
+    jump: {
+      imageSrc: "/textures/Player/Jump.png",
+      framesMax: 3,
+    },
+    fall: {
+      imageSrc: "/textures/Player/Fall.png",
+      framesMax: 3,
+    },
+    attack: {
+      imageSrc: "/textures/Player/Attack1.png",
+      framesMax: 7,
+    },
+    death: {
+      imageSrc: "/textures/player/Death.png",
+      framesMax: 11,
+    },
+    takeHit: {
+      imageSrc: "/textures/player/TakeHit.png",
+      framesMax: 4,
+    },
   },
 });
 
@@ -185,7 +282,7 @@ const enemy = new Fighter({
 });
 
 player.update();
-enemy.update();
+//enemy.update();
 
 const keys = {
   a: {
@@ -246,7 +343,7 @@ function animate() {
   shop.update();
 
   player.update();
-  enemy.update();
+  // enemy.update();
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
@@ -254,16 +351,31 @@ function animate() {
   /** handle movement when both keys are pressed
    * according the last key pressed
    */
+
   if (keys.a.pressed && player.lastKey === "a") {
     player.velocity.x = -movementVelocity;
+    player.switchSprite("run");
   } else if (keys.d.pressed && player.lastKey === "d") {
     player.velocity.x = movementVelocity;
+    player.switchSprite("run");
+  } else {
+    player.switchSprite("idle");
   }
 
   if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
     enemy.velocity.x = -movementVelocity;
   } else if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
     enemy.velocity.x = movementVelocity;
+  }
+
+  if (player.velocity.y < 0) {
+    player.switchSprite("jump");
+  } else if (player.velocity.y > 0) {
+    player.switchSprite("fall");
+  }
+
+  if (player.isAttacking) {
+    player.switchSprite("attack");
   }
 
   /** Detect Collision */
@@ -277,12 +389,15 @@ function animate() {
   if (detectCollisions({ enemy, player }) && enemy.isAttacking) {
     enemy.isAttacking = false;
     player.health -= 20;
+    player.switchSprite("takeHit");
     document.getElementById("playerHealth").style.width = player.health + "%";
   }
 
   if (player.health <= 0 || enemy.health <= 0) {
     checkGameState({ player, enemy });
     clearInterval(timerCountDown);
+    player.image = player.sprites.death.image;
+    player.framesMax = player.sprites.death.framesMax;
   }
 }
 
