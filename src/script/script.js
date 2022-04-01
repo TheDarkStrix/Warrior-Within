@@ -160,9 +160,17 @@ class Fighter extends Sprite {
   }
 
   switchSprite(sprite) {
+    /* override all other animations with the attack animation */
     if (
       this.image === this.sprites.attack.image &&
       this.framesCurrent < this.sprites.attack.framesMax - 1
+    )
+      return;
+
+    /* override all other animations when fight gets hit */
+    if (
+      this.image === this.sprites.takeHit.image &&
+      this.framesCurrent < this.sprites.takeHit.framesMax - 1
     )
       return;
 
@@ -206,6 +214,13 @@ class Fighter extends Sprite {
             this.framesMax = this.sprites.attack.framesMax;
             this.framesCurrent = 0;
           }
+        }
+        break;
+      case "takeHit":
+        if (this.image !== this.sprites.takeHit.image) {
+          this.image = this.sprites.takeHit.image;
+          this.framesMax = this.sprites.takeHit.framesMax;
+          this.framesCurrent = 0;
         }
         break;
       case "death":
@@ -458,8 +473,10 @@ function animate() {
     player.isAttacking &&
     player.framesCurrent === 1
   ) {
+    enemy.switchSprite("takeHit");
     player.isAttacking = false;
     enemy.health -= 20;
+
     document.getElementById("enemyHealth").style.width = enemy.health + "%";
   }
 
@@ -473,9 +490,10 @@ function animate() {
     enemy.isAttacking &&
     enemy.framesCurrent === 0
   ) {
+    player.switchSprite("takeHit");
     enemy.isAttacking = false;
     player.health -= 20;
-    player.switchSprite("takeHit");
+
     document.getElementById("playerHealth").style.width = player.health + "%";
   }
 
