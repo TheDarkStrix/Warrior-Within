@@ -4,11 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/css/style.css" />
     <title>Warrior Within</title>
   </head>
   <body>
     <div class="container">
-      <div class="main">
+      <div class="hidden" id="main">
         <div class="healthBarContainer">
           <div class="healthPositionWrapper playerHealthBar">
             <div class="healthBarBg"></div>
@@ -27,7 +28,18 @@
       </div>
 
       <canvas></canvas>
-      <div id="gameEnd"></div>
+      <div id="gameEndContainer" class="hidden">
+        <div id="gameEnd"></div>
+        <button type="button" onclick="restartGame()">Restart</button>
+      </div>
+      <div id="gameStartContainer">
+        <div id="gameStart"></div>
+        <button type="button" onclick="init()">Start</button>
+      </div>
     </div>
+
+    <script src="./src/script/utils.js"></script>
+    <script src="./src/script/classes.js"></script>
+    <script src="./src/script/script.js"></script>
   </body>
 </html>
