@@ -90,6 +90,7 @@ class Fighter extends Sprite {
     framesMax = 1,
     offset = { x: 0, y: 0 },
     sprites,
+    attackBox = { offset: {}, width: undefined, height: undefined },
   }) {
     super({
       imageSrc,
@@ -107,9 +108,9 @@ class Fighter extends Sprite {
         x: this.position.x,
         y: this.position.y,
       },
-      offset,
-      width: 100,
-      height: 50,
+      offset: attackBox.offset,
+      width: attackBox.width,
+      height: attackBox.height,
     };
     this.color = color;
     this.isAttacking;
@@ -129,7 +130,15 @@ class Fighter extends Sprite {
     this.draw();
     this.animateFrames();
     this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
-    this.attackBox.position.y = this.position.y;
+    this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
+
+    // attack box
+    // canvasContext.fillRect(
+    //   this.attackBox.position.x,
+    //   this.attackBox.position.y,
+    //   this.attackBox.width,
+    //   this.attackBox.height
+    // );
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
@@ -146,10 +155,8 @@ class Fighter extends Sprite {
   }
 
   attack() {
+    this.switchSprite("attack");
     this.isAttacking = true;
-    setTimeout(() => {
-      this.isAttacking = false;
-    }, 100);
   }
 
   switchSprite(sprite) {
@@ -263,6 +270,14 @@ const player = new Fighter({
       framesMax: 4,
     },
   },
+  attackBox: {
+    offset: {
+      x: 30,
+      y: 50,
+    },
+    width: 80,
+    height: 50,
+  },
 });
 
 const enemy = new Fighter({
@@ -315,6 +330,14 @@ const enemy = new Fighter({
       framesMax: 3,
     },
   },
+  attackBox: {
+    offset: {
+      x: -170,
+      y: 50,
+    },
+    width: 170,
+    height: 50,
+  },
 });
 
 player.update();
@@ -335,12 +358,12 @@ const keys = {
   },
 };
 
-function detectCollisions({ player, enemy }) {
+function detectCollisions({ p1, p2 }) {
   return (
-    player.attackBox.position.x + player.attackBox.width >= enemy.position.x &&
-    player.attackBox.position.x <= enemy.position.x + enemy.width &&
-    player.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
-    player.attackBox.position.y <= enemy.position.y + enemy.height
+    p1.attackBox.position.x + p1.attackBox.width >= p2.position.x &&
+    p1.attackBox.position.x <= p2.position.x + p2.width &&
+    p1.attackBox.position.y + p1.attackBox.height >= p2.position.y &&
+    p1.attackBox.position.y <= p2.position.y + p2.height
   );
 }
 
@@ -430,17 +453,34 @@ function animate() {
 
   /** Detect Collision */
 
-  if (detectCollisions({ player, enemy }) && player.isAttacking) {
+  if (
+    detectCollisions({ p1: player, p2: enemy }) &&
+    player.isAttacking &&
+    player.framesCurrent === 1
+  ) {
     player.isAttacking = false;
     enemy.health -= 20;
     document.getElementById("enemyHealth").style.width = enemy.health + "%";
   }
 
-  if (detectCollisions({ enemy, player }) && enemy.isAttacking) {
+  /** If the player misses */
+  if (player.isAttacking && player.framesCurrent === 1) {
+    player.isAttacking = false;
+  }
+
+  if (
+    detectCollisions({ p1: enemy, p2: player }) &&
+    enemy.isAttacking &&
+    enemy.framesCurrent === 0
+  ) {
     enemy.isAttacking = false;
     player.health -= 20;
     player.switchSprite("takeHit");
     document.getElementById("playerHealth").style.width = player.health + "%";
+  }
+
+  if (enemy.isAttacking && enemy.framesCurrent === 0) {
+    enemy.isAttacking = false;
   }
 
   if (player.health <= 0 || enemy.health <= 0) {
