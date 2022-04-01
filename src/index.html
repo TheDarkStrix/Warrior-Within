@@ -8,19 +8,26 @@
   </head>
   <body>
     <div class="container">
-      <div class="healthBarContainer">
-        <div class="healthPositionWrapper playerHealthBar">
-          <div class="healthBarBg"></div>
-          <div class="healthBar" id="playerHealth"></div>
+      <div class="main">
+        <div class="healthBarContainer">
+          <div class="healthPositionWrapper playerHealthBar">
+            <div class="healthBarBg"></div>
+            <div class="healthBar gradReverse" id="playerHealth"></div>
+          </div>
+          <div class="timer" id="gameTimer">40</div>
+          <div class="healthPositionWrapper">
+            <div class="healthBarBg"></div>
+            <div class="healthBar" id="enemyHealth"></div>
+          </div>
         </div>
-        <div class="timer" id="gameTimer">40</div>
-        <div class="healthPositionWrapper">
-          <div class="healthBarBg"></div>
-          <div class="healthBar" id="enemyHealth"></div>
+        <div class="playerNames">
+          <div>Max</div>
+          <div>Robin</div>
         </div>
       </div>
+
       <canvas></canvas>
-      <div class="gameEnd" id="gameEnd"></div>
+      <div id="gameEnd"></div>
     </div>
   </body>
 </html>

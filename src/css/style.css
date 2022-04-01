@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Press+Start+2P&display=swap");
+
 * {
   box-sizing: border-box;
 }
@@ -21,7 +23,8 @@
   position: relative;
   height: 30px;
   width: 100%;
-  border: 4px solid white;
+  border: 4px double white;
+  border-radius: 6px;
 }
 
 .playerHealthBar {
@@ -29,8 +32,12 @@
   justify-content: flex-end;
 }
 
+.gradReverse {
+  background-image: linear-gradient(90deg, #ffc719 0%, #bf033b 74%) !important;
+}
+
 .healthBar {
-  background-color: yellow;
+  background-image: linear-gradient(90deg, #bf033b 0%, #ffc719 74%);
   width: 100%;
   z-index: 12;
   height: 100%;
@@ -39,7 +46,7 @@
 }
 
 .healthBarBg {
-  background-color: blue;
+  background-color: transparent;
   width: 100%;
   position: absolute;
   height: 100%;
@@ -47,19 +54,47 @@
 }
 
 .timer {
-  width: 100px;
+  width: 60px;
   height: 50px;
-  background-color: red;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 4px double white;
+  border-radius: 6px;
+  font-family: "Press Start 2P";
+  color: white;
+  margin: 0 4px;
+  font-size: 1.2em;
 }
 
 .gameEnd {
+  background-color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100%;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  font-family: "Press Start 2P";
   color: white;
+  font-size: 3em;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  display: flex;
+}
+
+.playerNames {
+  font-family: "Kaushan Script", cursive;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: absolute;
+  top: 60px;
+  padding: 0px 30px;
+  font-size: 2em;
+  color: white;
+  font-weight: bolder;
 }

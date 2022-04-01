@@ -251,7 +251,7 @@ class Fighter extends Sprite {
 
 const player = new Fighter({
   position: {
-    x: 0,
+    x: 300,
     y: 0,
   },
   velocity: {
@@ -312,7 +312,7 @@ const player = new Fighter({
 
 const enemy = new Fighter({
   position: {
-    x: 400,
+    x: 600,
     y: 50,
   },
   velocity: {
@@ -398,15 +398,16 @@ function detectCollisions({ p1, p2 }) {
 }
 
 function checkGameState({ player, enemy }) {
+  gameEnd.classList.add("gameEnd");
   if (player.health === enemy.health) {
     gameEnd.innerHTML = "Tie";
   } else if (player.health > enemy.health) {
     gameEnd.innerHTML = "Max Won";
   } else {
-    gameEnd.innerHTML = "Enemy Won";
+    gameEnd.innerHTML = "Robin Won";
   }
 }
-let timer = 5;
+let timer = 40;
 let timerCountDown;
 function decreaseTimer() {
   let timerHTMLContent = document.getElementById("gameTimer");
