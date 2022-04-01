@@ -226,7 +226,7 @@ const player = new Fighter({
     x: 0,
     y: 0,
   },
-  imageSrc: "/textures/Player/Idle.png",
+  imageSrc: "/textures/Max/Idle.png",
   framesMax: 11,
   scale: 2.5,
   offset: {
@@ -235,31 +235,31 @@ const player = new Fighter({
   },
   sprites: {
     idle: {
-      imageSrc: "/textures/Player/Idle.png",
+      imageSrc: "/textures/Max/Idle.png",
       framesMax: 11,
     },
     run: {
-      imageSrc: "/textures/Player/Run.png",
+      imageSrc: "/textures/Max/Run.png",
       framesMax: 8,
     },
     jump: {
-      imageSrc: "/textures/Player/Jump.png",
+      imageSrc: "/textures/Max/Jump.png",
       framesMax: 3,
     },
     fall: {
-      imageSrc: "/textures/Player/Fall.png",
+      imageSrc: "/textures/Max/Fall.png",
       framesMax: 3,
     },
     attack: {
-      imageSrc: "/textures/Player/Attack1.png",
+      imageSrc: "/textures/Max/Attack1.png",
       framesMax: 7,
     },
     death: {
-      imageSrc: "/textures/player/Death.png",
+      imageSrc: "/textures/Max/Death.png",
       framesMax: 11,
     },
     takeHit: {
-      imageSrc: "/textures/player/TakeHit.png",
+      imageSrc: "/textures/Max/TakeHit.png",
       framesMax: 4,
     },
   },
@@ -274,15 +274,51 @@ const enemy = new Fighter({
     x: 0,
     y: 0,
   },
-  color: "blue",
   offset: {
     x: -50,
     y: 0,
   },
+  imageSrc: "/textures/Robin/Idle.png",
+  framesMax: 4,
+  scale: 2.5,
+  offset: {
+    x: 215,
+    y: 170,
+  },
+  sprites: {
+    idle: {
+      imageSrc: "/textures/Robin/Idle.png",
+      framesMax: 4,
+    },
+    run: {
+      imageSrc: "/textures/Robin/Run.png",
+      framesMax: 8,
+    },
+    jump: {
+      imageSrc: "/textures/Robin/Jump.png",
+      framesMax: 2,
+    },
+    fall: {
+      imageSrc: "/textures/Robin/Fall.png",
+      framesMax: 2,
+    },
+    attack: {
+      imageSrc: "/textures/Robin/Attack1.png",
+      framesMax: 4,
+    },
+    death: {
+      imageSrc: "/textures/Robin/Death.png",
+      framesMax: 7,
+    },
+    takeHit: {
+      imageSrc: "/textures/Robin/TakeHit.png",
+      framesMax: 3,
+    },
+  },
 });
 
 player.update();
-//enemy.update();
+enemy.update();
 
 const keys = {
   a: {
@@ -312,7 +348,7 @@ function checkGameState({ player, enemy }) {
   if (player.health === enemy.health) {
     gameEnd.innerHTML = "Tie";
   } else if (player.health > enemy.health) {
-    gameEnd.innerHTML = "Player Won";
+    gameEnd.innerHTML = "Max Won";
   } else {
     gameEnd.innerHTML = "Enemy Won";
   }
@@ -343,7 +379,7 @@ function animate() {
   shop.update();
 
   player.update();
-  // enemy.update();
+  enemy.update();
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
@@ -364,8 +400,12 @@ function animate() {
 
   if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
     enemy.velocity.x = -movementVelocity;
+    enemy.switchSprite("run");
   } else if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
     enemy.velocity.x = movementVelocity;
+    enemy.switchSprite("run");
+  } else {
+    enemy.switchSprite("idle");
   }
 
   if (player.velocity.y < 0) {
@@ -374,8 +414,18 @@ function animate() {
     player.switchSprite("fall");
   }
 
+  if (enemy.velocity.y < 0) {
+    enemy.switchSprite("jump");
+  } else if (enemy.velocity.y > 0) {
+    enemy.switchSprite("fall");
+  }
+
   if (player.isAttacking) {
     player.switchSprite("attack");
+  }
+
+  if (enemy.isAttacking) {
+    enemy.switchSprite("attack");
   }
 
   /** Detect Collision */
