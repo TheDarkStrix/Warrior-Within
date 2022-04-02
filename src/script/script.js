@@ -10,6 +10,7 @@ canvas.width = 1024;
 canvas.height = 576;
 canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
+let animateLoop;
 let player;
 let enemy;
 
@@ -48,10 +49,13 @@ const keys = {
 
 function restartGame() {
   window.location.reload();
+  // window.cancelAnimationFrame(animateLoop);
+  // this.gameRunning = false;
+  // init();
 }
 
 function animate() {
-  window.requestAnimationFrame(animate);
+  animateLoop = window.requestAnimationFrame(animate);
   /** Reset the canvas on every frame */
   canvasContext.fillStyle = "black";
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
