@@ -105,7 +105,7 @@ function animate() {
   if (
     detectCollisions({ p1: player, p2: enemy }) &&
     player.isAttacking &&
-    player.framesCurrent === 1
+    player.framesCurrent === 2
   ) {
     player.isAttacking = false;
     enemy.takeHit();
@@ -113,21 +113,21 @@ function animate() {
   }
 
   /** If the player misses */
-  if (player.isAttacking && player.framesCurrent === 1) {
+  if (player.isAttacking && player.framesCurrent === 2) {
     player.isAttacking = false;
   }
 
   if (
     detectCollisions({ p1: enemy, p2: player }) &&
     enemy.isAttacking &&
-    enemy.framesCurrent === 0
+    enemy.framesCurrent === 1
   ) {
     enemy.isAttacking = false;
     player.takeHit();
     document.getElementById("playerHealth").style.width = player.health + "%";
   }
 
-  if (enemy.isAttacking && enemy.framesCurrent === 0) {
+  if (enemy.isAttacking && enemy.framesCurrent === 1) {
     enemy.isAttacking = false;
   }
 

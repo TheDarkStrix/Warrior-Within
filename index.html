@@ -30,11 +30,25 @@
       <canvas></canvas>
       <div id="gameEndContainer" class="hidden">
         <div id="gameEnd"></div>
-        <button type="button" onclick="restartGame()">Restart</button>
+        <button type="button" class="button restart" onclick="restartGame()">
+          Restart
+        </button>
       </div>
       <div id="gameStartContainer">
-        <div id="gameStart"></div>
-        <button type="button" onclick="init()">Start</button>
+        <div id="gameStart" class="gameTitle">Warrior Within</div>
+        <button type="button" class="button start" onclick="init()">
+          Start
+        </button>
+        <div class="controlsContainer">
+          <div>
+            <div>Max Controls :</div>
+            <div class="control">W A S D</div>
+          </div>
+          <div>
+            <div>Robin Controls :</div>
+            <div class="control">Up Down Right Left</div>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -104,3 +104,56 @@
 .hidden {
   display: none;
 }
+
+.button {
+  display: flex;
+  margin: 5px;
+  font-weight: bold;
+  padding: 0.5em;
+  background-color: lightgray;
+  text-shadow: -1px -1px black, 1px 1px white;
+  color: gray;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  -o-border-radius: 7px;
+  border-radius: 7px;
+  box-shadow: 0 0.2em grey;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  font-family: "Press Start 2P";
+}
+
+.start {
+  font-size: 1em;
+}
+
+.restart {
+  font-size: 0.6em;
+  margin-top: 1em;
+}
+
+.button:active {
+  box-shadow: none;
+  position: relative;
+  top: 0.2em;
+}
+
+.gameTitle {
+  font-family: "Press Start 2P";
+  position: absolute;
+  top: 1em;
+}
+
+.controlsContainer {
+  position: absolute;
+  bottom: 2em;
+  display: flex;
+  font-size: 16px !important;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.control {
+  margin-top: 1em;
+}
